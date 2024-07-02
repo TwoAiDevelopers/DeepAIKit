@@ -1,4 +1,4 @@
-**#DeepAIKit**
+**DeepAIKit**
 
 DeepAIKit is an open-source library developed from scratch to provide a comprehensive suite of tools for machine learning and deep learning. This library aims to simplify the development, training, and deployment of ML and DL models without relying on existing frameworks like scikit-learn, PyTorch, or TensorFlow. Whether you are working on basic machine learning algorithms or advanced neural networks, deepAIKit offers a unified, easy-to-use interface to streamline your workflow.
 
