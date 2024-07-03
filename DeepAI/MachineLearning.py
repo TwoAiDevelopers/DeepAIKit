@@ -1,5 +1,5 @@
 import numpy as np
-
+from cvxopt import matrix, solvers
 
 class LinearRegression:
     """
@@ -192,3 +192,51 @@ class LogisticRegression:
         """
         y_pred_proba = self.predict_prob(x)
         return (y_pred_proba >= threshold).astype(int)
+
+
+
+
+
+class SVM:
+    def __init__(self, learning_rate=0.1, C=1, epsilon=0.1):
+        self.learning_rate = learning_rate
+        self.C = C
+        self.epsilon = epsilon
+        self.w = None
+        self.b = None
+        self.x = None
+        self.y = None
+
+    def SVR(self, x, y):
+        self.x = x
+        self.y = y
+        n_samples, n_features = x.shape
+
+        K = np.dot(x, x.T)
+
+        P = np.block([[K, -K], [-K, K]])
+        q = np.hstack([self.epsilon * np.ones(n_samples) + y, self.epsilon * np.ones(n_samples) - y])
+        G = np.vstack([-np.eye(2 * n_samples), np.eye(2 * n_samples)])
+        h = np.hstack([np.zeros(2 * n_samples), self.C * np.ones(2 * n_samples)])
+        A = np.hstack([np.ones(n_samples), -np.ones(n_samples)])
+        b = 0.0
+
+        P = matrix(P)
+        q = matrix(q)
+        G = matrix(G)
+        h = matrix(h)
+        A = matrix(A, (1, 2 * n_samples))
+        b = matrix(b)
+
+        solution = solvers.qp(P, q, G, h, A, b)
+        alphas = np.array(solution['x']).flatten()
+
+        alpha = alphas[:n_samples]
+        alpha_star = alphas[n_samples:]
+
+        self.w = np.sum((alpha - alpha_star)[:, None] * x, axis=0)
+        self.b = np.mean(y - np.dot(x, self.w))
+
+    def predict(self, x):
+        return np.dot(x, self.w) + self.b
+        return self
